@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+    <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
+    <script type="text/javascript">
+    
+      $(document).ready(function() {
+
+        // Read JSON from file when file is selected
+        $('input[type="file"]').change(function(e) {
+          var file = e.target.files[0];
+          if (!file) {
+            alert('Invalid file');
+            return;
+          }
+          var fileReader = new FileReader();
+          fileReader.onload = function(e) {
+            var contents = e.target.result;
+            var historicalData = JSON.parse(contents);
+            console.log(historicalData);
+              
+            historicalData.forEach(function(element) {
+              // Rearrange the elements to be compatible with the charting API
+              // Array item order should be: low, open, close, high
+              var high = element[2];
+              var open = element[3];
+              var close = element[4];
+              element[2] = open;
+              element[3] = close;
+              element[4] = high;
+              var date = new Date(element[0] * 1000);
+              element[0] = date.toUTCString();
+              element.splice(-1,1); // Remove volume
+              //element[0] = '' + date.getFullYear() + '-' + (date.GetMonth() + 1) + '-' + date.getDate() + '-' + 
+              //             date.getHours() + ':' + date.getMinutes();
+              console.log(element);
+            });
+
+            historicalData.reverse(); // JSON comes in reverse chronological order
+            drawChart(historicalData);  
+          };
+          fileReader.readAsText(file);
+        });
+
+        // Draw chart
+        google.charts.load('current', {'packages':['corechart']});
+        function drawChart(dataArray) {
+          var data = google.visualization.arrayToDataTable(dataArray, true /* Treat first row as data as well */);
+          var options = {
+            legend: 'none'
+          };
+
+          var chart = new google.visualization.CandlestickChart(document.getElementById('historical_data_chart_div'));
+          chart.draw(data, options);
+        }
+
+      });
+
+    </script>
+  </head>
+  <body>
+    <h1>Historical data</h1>
+    <pre>Select data file: <input type="file" id="data-file-input" /></pre>
+    <div id="historical_data_chart_div" style="width: 1000px; height: 500px;"</div>
+  </body>
+</html>
