@@ -33,8 +33,6 @@
               var date = new Date(element[0] * 1000);
               element[0] = date.toUTCString();
               element.splice(-1,1); // Remove volume
-              //element[0] = '' + date.getFullYear() + '-' + (date.GetMonth() + 1) + '-' + date.getDate() + '-' + 
-              //             date.getHours() + ':' + date.getMinutes();
               console.log(element);
             });
 
@@ -55,7 +53,6 @@
           var chart = new google.visualization.CandlestickChart(document.getElementById('historical_data_chart_div'));
           chart.draw(data, options);
         }
-
       });
 
     </script>
