@@ -26,7 +26,7 @@ fs.readFile(inputFilename, 'utf8', function(err, contents) {
   });
   historicalData.reverse(); // JSON comes in reverse chronological order
 
-  console.log(historicalData);  
+  console.log(JSON.stringify(historicalData));  
 });
 
 
